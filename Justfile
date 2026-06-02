@@ -4,7 +4,7 @@ IMAGE := "clawnch/opencode"
 
 # Build the Docker image
 build:
-    docker build -f Dockerfile.opencode --build-arg USER_ID=$(id -u) -t {{IMAGE}} .
+    docker build -f {{justfile_directory()}}/Dockerfile.opencode --build-arg USER_ID=$(id -u) -t {{IMAGE}} {{justfile_directory()}}
 
 # Store API keys in macOS Keychain
 setup:
@@ -36,7 +36,7 @@ remove-key account:
 #   net="bridge" (default): full internet, AI provider APIs work normally.
 #   net="none":             fully isolated, no network (AI features unavailable).
 opencode folder net="bridge" *args:
-    @docker image inspect {{IMAGE}} > /dev/null 2>&1 || docker build -f Dockerfile.opencode --build-arg USER_ID=$(id -u) -t {{IMAGE}} .; \
+    @docker image inspect {{IMAGE}} > /dev/null 2>&1 || docker build -f {{justfile_directory()}}/Dockerfile.opencode --build-arg USER_ID=$(id -u) -t {{IMAGE}} {{justfile_directory()}}; \
     f="{{folder}}"; \
     case "$f" in \
         /*) ;; \

@@ -49,7 +49,7 @@ Add to your `~/.zshrc` (adjust path if you cloned elsewhere):
 
 ```zsh
 clawnch() {
-  just --justfile ~/clawnch/Justfile --working-directory ~/clawnch "$@"
+  just --justfile ~/clawnch/Justfile --working-directory "$PWD" "$@"
 }
 ```
 
