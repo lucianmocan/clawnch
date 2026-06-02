@@ -13,14 +13,17 @@ Initial support for macOS + [opencode](https://github.com/anomalyco/opencode).
 ## Quick start
 
 ```sh
-# 1. Store your API keys (saved to macOS Keychain, never to disk as plaintext)
-just setup
-
-# 2. Build the sandboxed image
+# 1. Build the sandboxed image
 just build
 
-# 3. Run the agent against a project folder
+# 2. Run the agent against a project folder
 just opencode ~/my-project
+```
+
+Some opencode models work without any API key. If you need one, store it first:
+
+```sh
+just setup   # saves keys to macOS Keychain, never to disk as plaintext
 ```
 
 The container runs as a non-root user, drops all Linux capabilities, and mounts only the target folder.
