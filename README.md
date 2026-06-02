@@ -39,6 +39,46 @@ The container runs as a non-root user, drops all Linux capabilities, and mounts 
 | `just opencode <folder> [args...]` | Run opencode against a folder |
 | `just opencode <folder> net=none` | Run fully isolated (no network; AI features unavailable) |
 
+## Using from anywhere
+
+By default the commands above must be run from inside the cloned repo. To use them from any directory:
+
+**Option 1 — Shell function (recommended)**
+
+Add to your `~/.zshrc` (adjust path if you cloned elsewhere):
+
+```zsh
+safe() {
+  just --justfile ~/Develop/safe/Justfile --working-directory ~/Develop/safe "$@"
+}
+```
+
+Then reload your shell (`source ~/.zshrc`) and use `safe` instead of `just`:
+
+```sh
+safe opencode ~/my-project
+safe build
+safe setup
+```
+
+**Option 2 — just global justfile**
+
+Add an import to `~/.justfile` (create it if it doesn't exist):
+
+```just
+import "~/Develop/safe/Justfile"
+```
+
+Then run with the `--global-justfile` flag, optionally aliased:
+
+```zsh
+alias jsafe='just --global-justfile'
+```
+
+```sh
+jsafe opencode ~/my-project
+```
+
 ## Security notes
 
 - API keys are read directly from Keychain into the container via a pipe — they are never written to disk.
