@@ -48,17 +48,17 @@ By default the commands above must be run from inside the cloned repo. To use th
 Add to your `~/.zshrc` (adjust path if you cloned elsewhere):
 
 ```zsh
-safe() {
-  just --justfile ~/safe/Justfile --working-directory ~/safe "$@"
+clawnch() {
+  just --justfile ~/clawnch/Justfile --working-directory ~/clawnch "$@"
 }
 ```
 
-Then reload your shell (`source ~/.zshrc`) and use `safe` instead of `just`:
+Then reload your shell (`source ~/.zshrc`) and use `clawnch` instead of `just`:
 
 ```sh
-safe opencode ~/my-project
-safe build
-safe setup
+clawnch opencode ~/my-project
+clawnch build
+clawnch setup
 ```
 
 **Option 2 — just global justfile**
@@ -66,17 +66,17 @@ safe setup
 Add an import to `~/.justfile` (create it if it doesn't exist):
 
 ```just
-import "~/safe/Justfile"
+import "~/clawnch/Justfile"
 ```
 
 Then run with the `--global-justfile` flag, optionally aliased:
 
 ```zsh
-alias jsafe='just --global-justfile'
+alias jclawnch='just --global-justfile'
 ```
 
 ```sh
-jsafe opencode ~/my-project
+jclawnch opencode ~/my-project
 ```
 
 ## Security notes

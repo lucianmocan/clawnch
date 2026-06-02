@@ -1,6 +1,6 @@
 set shell := ["bash", "-c"]
 
-IMAGE := "safe/opencode"
+IMAGE := "clawnch/opencode"
 
 # Build the Docker image
 build:
@@ -12,15 +12,15 @@ setup:
         printf "%s: " "$account"; \
         read -r val; \
         [ -z "$val" ] && continue; \
-        security add-generic-password -s safe -a "$account" -w "$val" -U 2>/dev/null; \
+        security add-generic-password -s clawnch -a "$account" -w "$val" -U 2>/dev/null; \
         echo "  stored"; \
     done; \
-    echo "Done. Keys are stored in macOS Keychain (service: safe)."
+    echo "Done. Keys are stored in macOS Keychain (service: clawnch)."
 
 # List stored API keys (values are masked)
 list:
     @for account in OPENROUTER_API_KEY ANTHROPIC_API_KEY OPENAI_API_KEY GOOGLE_API_KEY DEEPSEEK_API_KEY Together_API_KEY; do \
-        value=$(security find-generic-password -s safe -a "$account" -w 2>/dev/null); \
+        value=$(security find-generic-password -s clawnch -a "$account" -w 2>/dev/null); \
         if [ -n "$value" ]; then \
             echo "$account  $(echo "$value" | sed 's/./*/g')"; \
         fi; \
@@ -28,7 +28,7 @@ list:
 
 # Remove a specific key from Keychain (e.g. just remove-key OPENROUTER_API_KEY)
 remove-key account:
-    @security delete-generic-password -s safe -a "{{account}}" > /dev/null 2>&1 && \
+    @security delete-generic-password -s clawnch -a "{{account}}" > /dev/null 2>&1 && \
         echo "Removed {{account}}" || \
         echo "Key {{account}} not found"
 
@@ -50,7 +50,7 @@ opencode folder net="bridge" *args:
         -v "$abs_path:/workspace:delegated" \
         --env-file <( \
             for account in OPENROUTER_API_KEY ANTHROPIC_API_KEY OPENAI_API_KEY GOOGLE_API_KEY DEEPSEEK_API_KEY Together_API_KEY; do \
-                value=$(security find-generic-password -s safe -a "$account" -w 2>/dev/null); \
+                value=$(security find-generic-password -s clawnch -a "$account" -w 2>/dev/null); \
                 [ -n "$value" ] && printf '%s=%s\n' "$account" "$value"; \
             done \
         ) \
