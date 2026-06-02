@@ -49,7 +49,7 @@ Add to your `~/.zshrc` (adjust path if you cloned elsewhere):
 
 ```zsh
 safe() {
-  just --justfile ~/Develop/safe/Justfile --working-directory ~/Develop/safe "$@"
+  just --justfile ~/safe/Justfile --working-directory ~/safe "$@"
 }
 ```
 
@@ -66,7 +66,7 @@ safe setup
 Add an import to `~/.justfile` (create it if it doesn't exist):
 
 ```just
-import "~/Develop/safe/Justfile"
+import "~/safe/Justfile"
 ```
 
 Then run with the `--global-justfile` flag, optionally aliased:
