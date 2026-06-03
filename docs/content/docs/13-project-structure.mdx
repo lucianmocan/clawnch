@@ -1,0 +1,55 @@
+---
+title: Project Structure
+description: Complete file and directory layout
+---
+
+```text
+clawnch/
+├── main.go                       # Entrypoint
+├── go.mod
+├── go.sum
+├── Justfile                      # Build, test, release
+├── LICENSE                       # Apache 2.0
+├── README.md
+├── SPEC.md                       # Canonical specification
+│
+├── images/                       # Agent Dockerfiles
+│   ├── opencode.Dockerfile
+│   ├── claude.Dockerfile
+│   └── codex.Dockerfile
+│
+├── clawnch/                      # Internal Go package
+│   ├── cli.go                    # Root cobra command
+│   ├── run.go                    # clawnch run
+│   ├── setup.go                  # clawnch setup
+│   ├── list.go                   # clawnch list
+│   ├── stop.go                   # clawnch stop
+│   ├── logs.go                   # clawnch logs
+│   ├── network.go                # clawnch network
+│   ├── agents.go                 # clawnch agents
+│   ├── backend.go                # Backend interface
+│   ├── container.go              # ContainerBackend
+│   ├── creds.go                  # CredStore interface
+│   ├── keychain.go               # macOS Keychain
+│   ├── encfile.go                # Encrypted file
+│   ├── agent.go                  # Agent type + registry
+│   ├── types.go                  # Shared types
+│   ├── config.go                 # Config loading
+│   ├── network.go                # Network policy
+│   ├── git.go                    # Git branch mode
+│   └── util.go                   # Path resolution, helpers
+│
+├── docs/                         # Fumadocs documentation site
+│   ├── package.json
+│   ├── next.config.ts
+│   ├── source.config.ts
+│   ├── tsconfig.json
+│   ├── app/
+│   ├── content/
+│   └── lib/
+│
+└── build/                        # Release artifacts (gitignored)
+    ├── clawnch-darwin-arm64
+    ├── clawnch-linux-arm64
+    └── clawnch-linux-amd64
+```

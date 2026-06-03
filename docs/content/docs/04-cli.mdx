@@ -1,0 +1,121 @@
+---
+title: CLI Specification
+description: All commands, flags, arguments, and exit codes
+---
+
+## Global Flags
+
+| Flag | Default | Description |
+|---|---|---|
+| `--config` | `~/.config/clawnch/config.toml` | Path to config file |
+| `--log-level` | `warn` | Log level: `debug`, `info`, `warn`, `error` |
+| `--log-format` | `text` | Output format: `text`, `json` |
+| `--no-color` | `false` | Disable ANSI color output |
+
+## `clawnch run <agent> [directory]`
+
+Run an AI agent inside a sandbox.
+
+| Arg | Required | Description |
+|---|---|---|
+| `agent` | Yes | Name of the agent (see `clawnch agents`) |
+| `directory` | No | Project directory (default: current directory) |
+
+| Flag | Default | Description |
+|---|---|---|
+| `--backend` | `container` | Isolation backend |
+| `--name` | auto | Assign a name to the sandbox |
+| `--network` | `isolated` | Network mode: `isolated`, `host`, `none` |
+| `--branch` | `false` | Auto-create a git branch |
+| `--no-creds` | `false` | Skip credential injection |
+| `-d`, `--detach` | `false` | Run in background |
+
+## `clawnch setup`
+
+Store API keys in the system keychain.
+
+| Flag | Default | Description |
+|---|---|---|
+| `--store` | auto | Credential backend: `keychain`, `file` |
+
+## `clawnch list`
+
+List running sandboxes.
+
+| Flag | Default | Description |
+|---|---|---|
+| `--all` | `false` | Include stopped sandboxes |
+| `--agent` | `""` | Filter by agent name |
+| `--quiet` | `false` | Print only names (one per line) |
+
+## `clawnch stop <name>`
+
+Stop and remove a running sandbox.
+
+| Flag | Default | Description |
+|---|---|---|
+| `--rm` | `true` | Also remove the container |
+| `--force` | `false` | Force stop (SIGKILL) |
+
+## `clawnch logs <name>`
+
+Display logs from a sandbox.
+
+| Flag | Default | Description |
+|---|---|---|
+| `-f`, `--follow` | `false` | Follow log output |
+| `--tail` | `50` | Lines from the end |
+| `--timestamps` | `false` | Show timestamps |
+
+## `clawnch network`
+
+Manage network allow/block rules.
+
+| Subcommand | Description |
+|---|---|
+| `clawnch network allow <host>...` | Add hosts to the allow list |
+| `clawnch network block <host>...` | Add hosts to the block list |
+| `clawnch network list` | Show current rules |
+| `clawnch network reset` | Clear all rules |
+
+## `clawnch agents`
+
+| Subcommand | Description |
+|---|---|
+| `clawnch agents` | List all available agents |
+| `clawnch agents info <name>` | Show detailed agent information |
+
+## `clawnch version`
+
+Print version information.
+
+## Examples
+
+```sh
+# Run opencode in current directory
+clawnch run opencode
+
+# Run opencode against a specific project
+clawnch run opencode ~/projects/my-app
+
+# Run Claude Code with a custom name and detached
+clawnch run claude . --name my-experiment --detach
+
+# Run with no network access
+clawnch run opencode . --network none
+
+# Run with git branch auto-creation
+clawnch run opencode . --branch
+
+# Run with the microVM backend (future)
+clawnch run opencode . --backend microvm
+```
+
+## Exit Codes
+
+| Code | Meaning |
+|---|---|
+| 0 | Agent exited successfully |
+| 1 | General error |
+| 2 | Agent exited with error |
+| 3 | Interrupted by user (SIGINT) |

@@ -1,0 +1,25 @@
+{
+  "pages": [
+    "index",
+    "01-problem",
+    "02-goals",
+    "03-architecture",
+    "04-cli",
+    "05-interfaces",
+    "06-backends",
+    "07-credentials",
+    "08-agents",
+    "09-network",
+    "10-git-branch",
+    "11-security",
+    "12-configuration",
+    "13-project-structure",
+    "14-development",
+    "15-testing",
+    "16-release",
+    "17-future",
+    "18-appendix-dockerfiles",
+    "19-appendix-deps",
+    "20-appendix-errors"
+  ]
+}

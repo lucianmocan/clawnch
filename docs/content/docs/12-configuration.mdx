@@ -1,0 +1,35 @@
+---
+title: Configuration
+description: Config file locations, format, and precedence
+---
+
+## Config File Locations
+
+| Path | Purpose | Format |
+|---|---|---|
+| `~/.config/clawnch/config.toml` | User preferences | TOML |
+| `~/.config/clawnch/network.toml` | Network rules | TOML |
+| `~/.local/share/clawnch/` | Runtime data (future) | — |
+
+## User Config (`config.toml`)
+
+```toml
+default_backend = "container"
+default_network = "isolated"
+default_cred_store = "auto"
+
+[cred_file]
+path = "~/.config/clawnch/creds.enc"
+
+[branch]
+auto_commit = false
+auto_pr = false
+prefix = "clawnch"
+```
+
+## Config Precedence
+
+1. CLI flags (highest)
+2. `--config` file (if specified)
+3. `~/.config/clawnch/config.toml`
+4. Built-in defaults (lowest)

@@ -1,0 +1,41 @@
+---
+title: Problem Statement
+description: Why existing sandbox solutions fall short
+---
+
+## The Agent Safety Problem
+
+AI coding agents (OpenCode, Claude Code, Codex, Gemini CLI, Kiro, etc.) operate by generating and executing arbitrary code — shell commands, file edits, package installations, test suites. This is their fundamental value proposition, but it also makes them inherently dangerous to run directly on a developer's workstation.
+
+An agent or a compromised dependency can:
+
+- **Read** SSH keys, API tokens, browser cookies, `~/.aws/credentials`
+- **Modify or delete** files outside the intended project scope
+- **Exfiltrate** data to external servers
+- **Install** malware, cryptominers, or backdoors
+- **Pivot** through the local network to internal services
+- **Destroy** git history, overwrite backups, corrupt repositories
+
+## Inadequacy of Existing Solutions
+
+| Approach | Problem |
+|---|---|
+| **Native agent permissions** | Agent can be socially engineered; permissions enforced by the agent, not the system |
+| **Running in a container** | Containers share the host kernel; a container escape or kernel exploit breaks isolation |
+| **Running in a VM** | Strong isolation but heavyweight; no credential management, network policy, or git integration |
+| **`docker sandbox` / `sbx`** | Proprietary, not open source, tied to Docker's ecosystem |
+| **microsandbox** | Excellent microVM isolation but low-level; no credential or network integration |
+| **yolobox / yolo-cage / landrun** | Each solves one piece, none provides a comprehensive solution |
+
+## The Gap
+
+No open-source tool exists that:
+
+1. Provides a **unified CLI** for running any coding agent safely
+2. Supports **multiple isolation backends** (containers for speed, microVMs for strong isolation)
+3. Integrates **platform-native credential management** (no plaintext `.env` files)
+4. Enforces **network policies** (default-isolate, allow-list specific hosts)
+5. Manages **sandbox lifecycle** (run, list, stop, logs, cleanup)
+6. Offers **git workflow automation** (auto-branch, auto-PR)
+
+Clawnch fills this gap.

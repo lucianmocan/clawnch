@@ -1,0 +1,24 @@
+---
+title: Goals & Non-Goals
+description: What clawnch aims to be — and what it explicitly is not
+---
+
+## Goals
+
+- **Secure by default.** A sandbox should be more restricted than the host, not less. Defaults favor safety over convenience.
+- **Cross-platform.** macOS (Apple Silicon + Intel) for MVP; Linux (amd64 + arm64) in scope; Windows (future).
+- **Multi-agent.** Support OpenCode, Claude Code, Codex, Gemini CLI, and Kiro out of the box, with a documented extension path for custom agents.
+- **Pluggable backends.** Container isolation (Docker) for MVP; microVM isolation (microsandbox / Firecracker) as a future backend.
+- **Platform-native secrets.** macOS Keychain for Apple systems; freedesktop.org Secret Service for Linux; encrypted file fallback for headless environments.
+- **Network policy.** Configurable allow/block lists for outbound traffic from sandboxes.
+- **Lifecycle management.** Commands to list, inspect, stop, and retrieve logs from running sandboxes.
+- **Single static binary.** No runtime dependency beyond the system's existing Docker or microsandbox installation.
+
+## Non-Goals
+
+- **Not a container runtime.** Clawnch delegates to Docker, microsandbox, or similar.
+- **Not a secrets manager.** Clawnch reads from the system keychain and injects credentials as environment variables. It does not replace 1Password or Vault.
+- **Not a CI/CD platform.** Clawnch targets interactive developer workflows, not production pipeline execution.
+- **Not an agent framework.** Clawnch does not implement agent logic, tool calling, or model interaction. It provides the environment where agents run.
+- **Not a network proxy.** Network policy is enforced at the container/VM level, not via an application-level proxy.
+- **No GUI.** The interface is a terminal CLI and (future) TUI. No web UI or desktop app.

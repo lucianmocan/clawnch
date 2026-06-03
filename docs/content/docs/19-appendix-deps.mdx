@@ -1,0 +1,27 @@
+---
+title: "Appendix B: Dependencies"
+description: Go module dependencies
+---
+
+## Go Dependencies
+
+| Module | Purpose |
+|---|---|
+| `github.com/spf13/cobra` | CLI framework |
+| `github.com/spf13/viper` | Config file parsing |
+| `github.com/BurntSushi/toml` | TOML decoder |
+| `go.uber.org/zap` | Structured logging |
+| `github.com/fatih/color` | Terminal color output |
+| `github.com/mattn/go-isatty` | TTY detection |
+
+## Standard Library (No External Dependencies)
+
+- `os/exec` — Subprocess management (docker, security, git)
+- `crypto/sha256` — Checksum verification
+- `encoding/json` — Structured output
+- `path/filepath` — Path resolution
+- `os/user` — Home directory lookup
+
+## Dependency Philosophy
+
+Cobra + Viper are the standard Go CLI stack. Zap provides fast structured logging without reflection. Everything else is stdlib. Minimal dependencies reduce supply chain risk and build times.

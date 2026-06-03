@@ -1,0 +1,84 @@
+---
+title: "Appendix A: Image Definitions"
+description: Dockerfiles for each supported agent
+---
+
+## opencode.Dockerfile
+
+```dockerfile
+FROM debian:stable-slim AS downloader
+
+RUN apt-get update && apt-get install -y \
+    curl ca-certificates --no-install-recommends \
+    && rm -rf /var/lib/apt/lists/*
+
+ARG TARGETARCH
+ARG OPENCODE_VERSION=v1.15.13
+ARG OPENCODE_SHA256_ARM64=7a0e5da2427c7804314fe0f87b74b4408467f94e3b8b1a61ba25a1d71fe0b4d2
+ARG OPENCODE_SHA256_AMD64=638838d7c6dfea1a017363063b7f2d421f0110687c4bb3c6e1f986a0ae1553a2
+
+RUN set -eux; \
+    case "${TARGETARCH}" in \
+        arm64|aarch64) BINARY="opencode-linux-arm64.tar.gz"; EXPECTED="${OPENCODE_SHA256_ARM64}" ;; \
+        amd64|x86_64)  BINARY="opencode-linux-x64-baseline.tar.gz"; EXPECTED="${OPENCODE_SHA256_AMD64}" ;; \
+        *) case "$(uname -m)" in aarch64|arm64) BINARY="opencode-linux-arm64.tar.gz"; EXPECTED="${OPENCODE_SHA256_ARM64}" ;; *) BINARY="opencode-linux-x64-baseline.tar.gz"; EXPECTED="${OPENCODE_SHA256_AMD64}" ;; esac ;; \
+    esac; \
+    curl -fsSL -o /tmp/opencode.tar.gz \
+        "https://github.com/anomalyco/opencode/releases/download/${OPENCODE_VERSION}/${BINARY}"; \
+    echo "${EXPECTED}  /tmp/opencode.tar.gz" | sha256sum --check --strict -; \
+    tar xz -C /usr/local/bin/ -f /tmp/opencode.tar.gz opencode; \
+    rm -f /tmp/opencode.tar.gz
+
+FROM debian:stable-slim
+
+RUN apt-get update && apt-get install -y \
+    git ca-certificates --no-install-recommends \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY --from=downloader /usr/local/bin/opencode /usr/local/bin/opencode
+
+ARG USER_ID=1000
+RUN groupadd --system --gid ${USER_ID} agent \
+    && useradd --system --uid ${USER_ID} --gid agent --create-home --home-dir /home/agent agent
+
+USER agent
+WORKDIR /workspace
+```
+
+## claude.Dockerfile
+
+```dockerfile
+FROM debian:stable-slim
+
+RUN apt-get update && apt-get install -y \
+    git curl ca-certificates npm --no-install-recommends \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN npm install -g @anthropic-ai/claude-code
+
+ARG USER_ID=1000
+RUN groupadd --system --gid ${USER_ID} agent \
+    && useradd --system --uid ${USER_ID} --gid agent --create-home --home-dir /home/agent agent
+
+USER agent
+WORKDIR /workspace
+```
+
+## codex.Dockerfile
+
+```dockerfile
+FROM debian:stable-slim
+
+RUN apt-get update && apt-get install -y \
+    git curl ca-certificates npm --no-install-recommends \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN npm install -g @openai/codex
+
+ARG USER_ID=1000
+RUN groupadd --system --gid ${USER_ID} agent \
+    && useradd --system --uid ${USER_ID} --gid agent --create-home --home-dir /home/agent agent
+
+USER agent
+WORKDIR /workspace
+```

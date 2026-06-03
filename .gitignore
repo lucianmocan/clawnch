@@ -1,0 +1,10 @@
+node_modules/
+
+# Next.js
+docs/.next/
+docs/.source/
+docs/out/
+
+# env files
+docs/.env*
+!docs/.env.example

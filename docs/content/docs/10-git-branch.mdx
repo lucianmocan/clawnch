@@ -1,0 +1,34 @@
+---
+title: Git Branch Mode
+description: Auto-branch, commit, and pull request workflows
+---
+
+## Motivation
+
+When an AI agent modifies files, changes are applied directly to the working tree. If the changes are destructive, recovery requires manual `git checkout` or `git restore`.
+
+Branch mode creates a dedicated git branch before the session, isolating the agent's changes from the main branch.
+
+## Flow
+
+1. Verify workspace is a git repository
+2. Verify no uncommitted changes (stash or abort)
+3. `git checkout -b clawnch/<agent>/<timestamp>`
+4. Run the sandbox (agent modifies files on the branch)
+5. After exit: print merge instructions
+
+## Branch Naming Convention
+
+```
+clawnch/<agent>/<YYYYMMDD>-<HHMMSS>
+```
+
+Example: `clawnch/opencode/20260602-143000`
+
+## Flags
+
+| Flag | Behavior |
+|---|---|
+| `--branch` | Create branch, print merge instructions on exit |
+| `--branch --commit` | Auto-stage and commit |
+| `--branch --pr` | Create a GitHub PR (requires `gh` CLI) |

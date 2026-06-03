@@ -1,0 +1,54 @@
+---
+title: Architecture
+description: High-level architecture, lifecycle, and process model
+---
+
+## High-Level Architecture
+
+```text
+User → clawnch CLI → Orchestration Layer → Backend (Docker/microsandbox)
+                                        → CredStore (Keychain/Secret Service)
+                                        → Network Policy
+                                        → Git Workflow
+```
+
+The orchestration layer handles:
+
+1. Resolving the workspace path
+2. Resolving the agent (image, command, required env vars)
+3. Building or pulling the agent image if missing
+4. Retrieving credentials via CredStore
+5. Building an `--env-file` from retrieved credentials
+6. Resolving the network policy from config
+7. (Optional) Creating a git branch
+8. Calling `Backend.Run()`
+9. Cleaning up temp files on exit
+
+## Lifecycle of `clawnch run`
+
+**Phase 1 — Validation** — Parse CLI flags, verify agent name, resolve workspace path, validate backend name.
+
+**Phase 2 — Credential Retrieval** — Determine required env vars from agent metadata, retrieve from CredStore, write to a temp file (`mktemp`, `0600`).
+
+**Phase 3 — Image Resolution** — Check if image exists locally. If not, build from `images/<agent>.Dockerfile`.
+
+**Phase 4 — Network Policy** — Load network config, determine effective mode, build Docker network flags.
+
+**Phase 5 — Git Branch (optional)** — Verify workspace is a git repo, create branch `clawnch/<agent>-<timestamp>`.
+
+**Phase 6 — Execution** — Build and run the `docker run` command with all flags, attach stdin/stdout/stderr.
+
+**Phase 7 — Cleanup** — Remove temp env file, print merge instructions (if branch mode).
+
+## Process Model
+
+Clawnch runs as a single process with no daemon. Sandbox lifecycle commands (`list`, `stop`, `logs`) inspect Docker containers directly rather than maintaining internal state.
+
+The only persistent state is:
+
+| Data | Location | Format |
+|---|---|---|
+| Credentials | System keychain | Platform-native |
+| Network policy | `~/.config/clawnch/network.toml` | TOML |
+| User preferences | `~/.config/clawnch/config.toml` | TOML |
+| Agent images | Docker local image store | Docker images |

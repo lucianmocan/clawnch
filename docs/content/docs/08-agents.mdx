@@ -1,0 +1,35 @@
+---
+title: Agent Registry
+description: Built-in agents, image build process, and user-defined agents
+---
+
+## Built-in Agents
+
+| Agent | Image | Command | Required Env | Backends |
+|---|---|---|---|---|
+| `opencode` | `clawnch/opencode` | `opencode /workspace` | `OPENROUTER_API_KEY`, `ANTHROPIC_API_KEY`, `OPENAI_API_KEY` | container |
+| `claude` | `clawnch/claude` | `claude /workspace` | `ANTHROPIC_API_KEY` | container |
+| `codex` | `clawnch/codex` | `codex /workspace` | `OPENAI_API_KEY` | container |
+
+## Image Build Process
+
+When an agent image is not found locally, clawnch builds it:
+
+```sh
+docker build -f images/<agent>.Dockerfile -t clawnch/<agent> .
+```
+
+Build context is the project root (not the image directory) so Dockerfiles can reference shared assets.
+
+## User-Defined Agents (Future)
+
+Custom agents via `~/.config/clawnch/agents.toml`:
+
+```toml
+[agents.my-agent]
+description = "My Custom Agent"
+image = "my-custom-image:latest"
+command = ["my-agent", "/workspace"]
+env_keys = ["MY_API_KEY"]
+backends = ["container"]
+```

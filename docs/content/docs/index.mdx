@@ -1,0 +1,43 @@
+---
+title: Overview
+description: Clawnch — open-source sandbox orchestration for AI coding agents
+---
+
+# Clawnch
+
+**Version:** 0.1.0 — Draft  
+**License:** Apache 2.0  
+**Language:** Go  
+**Repository:** `github.com/lucianmocan/clawnch` (planned)
+
+Clawnch is an open-source CLI tool that orchestrates secure, isolated environments for AI coding agents. It composes existing sandbox technologies (Docker, microsandbox) with platform-native credential management (macOS Keychain, Linux Secret Service), network policy enforcement, and git workflow automation into a single, extensible command-line interface.
+
+## Design Philosophy
+
+- **Compose, don't reimplement.** Use the best tool for each layer and integrate them through a unified interface.
+- **Security by default.** Capability dropping, network isolation, credential injection via pipes, and ephemeral sandboxes with automatic cleanup.
+- **Platform-native.** Use each OS's built-in secret storage rather than reinvent key management.
+- **Pluggable backends.** The same `clawnch run` command works with containers today and microVMs tomorrow.
+
+## Quick Start
+
+```sh
+# Install dependencies (macOS)
+brew install docker   # or Docker Desktop
+brew install just
+
+# Clone and build
+git clone https://github.com/lucianmocan/clawnch
+cd clawnch
+just build
+
+# Store API keys in macOS Keychain
+clawnch setup
+
+# Run opencode against a project
+clawnch run opencode ~/my-project
+```
+
+## Status
+
+Pre-release / experimental. Single-person project actively in development.

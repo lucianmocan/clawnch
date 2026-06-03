@@ -1,0 +1,51 @@
+---
+title: Backend Subsystem
+description: ContainerBackend (MVP) and MicrovmBackend (future)
+---
+
+## ContainerBackend (MVP)
+
+The `ContainerBackend` shells out to the local `docker` CLI. It is the default and primary backend for the MVP.
+
+### Generated Docker Flags
+
+```sh
+docker run -it --rm \
+    --name <sandbox-name> \
+    -v <workspace>:/workspace:delegated \
+    --env-file <temp-env-file> \
+    --network <network-config> \
+    --add-host <allowed-hosts...> \
+    --cap-drop ALL \
+    --security-opt no-new-privileges:true \
+    --label clawnch=true \
+    --label clawnch.agent=<agent> \
+    --label clawnch.backend=container \
+    <image> \
+    <command...>
+```
+
+### Security Flags
+
+- `--cap-drop ALL` — drops every Linux capability
+- `--security-opt no-new-privileges:true` — prevents privilege escalation
+- No Docker socket mount — the container cannot access the host Docker daemon
+- Read-only root filesystem (future)
+
+### Container Naming
+
+- If `--name` is provided, use it directly
+- Otherwise: `<agent>-<random-suffix>` (e.g., `opencode-a7x3k`)
+
+### Labeling
+
+All sandbox containers are labeled with `clawnch=true` for reliable filtering via `docker ps --filter label=clawnch=true`.
+
+## MicrovmBackend (Future)
+
+The `MicrovmBackend` will shell out to `microsandbox` (or a similar microVM runtime). Key differences from ContainerBackend:
+
+- MicroVMs run a separate kernel — stronger isolation guarantees
+- Cold start is slower (2–5 seconds vs &lt;1s for containers)
+- Docker-in-Docker support: the agent can build images and run containers inside the microVM
+- Currently Linux-only (KVM required); macOS via virtualization framework is future work

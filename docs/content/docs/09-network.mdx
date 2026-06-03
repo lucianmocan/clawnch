@@ -1,0 +1,47 @@
+---
+title: Network Policy
+description: Policy model, Docker implementation, and config file format
+---
+
+## Policy Model
+
+The network policy answers: "What external hosts can the agent inside the sandbox reach?"
+
+| Mode | Default | Allow list | Block list | Use case |
+|---|---|---|---|---|
+| `isolated` (default) | Drop all outbound | Resolved to IPs, `--add-host` | Resolved to `0.0.0.0` | General use |
+| `host` | No restriction | Ignored | Ignored | Debugging |
+| `none` | No network | Ignored | Ignored | Maximum isolation |
+
+## Implementation (ContainerBackend)
+
+**Isolated mode:** The container runs on a user-defined Docker bridge network (`clawnch` bridge, created automatically on first use). DNS resolution is handled by Docker's embedded DNS.
+
+- Allowed hosts: `--add-host <hostname>:<resolved-ip>`
+- Blocked hosts: `--add-host <hostname>:0.0.0.0`
+
+**Host mode:** `--network host` — container shares the host's network stack.
+
+**None mode:** `--network none` — loopback only.
+
+## Config File
+
+Location: `~/.config/clawnch/network.toml`
+
+```toml
+allow = [
+    "api.openai.com",
+    "api.anthropic.com",
+    "openrouter.ai",
+    "api.deepseek.com",
+    "generativelanguage.googleapis.com",
+]
+
+block = [
+    "169.254.169.254",  # cloud metadata endpoint
+]
+```
+
+## DNS Resolution
+
+Allowed and blocked hosts are resolved to IP addresses at sandbox start time. Results are cached for the lifetime of the process. If DNS resolution fails, a warning is printed and the hostname is passed to Docker as-is.

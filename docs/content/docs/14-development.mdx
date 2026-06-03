@@ -1,0 +1,52 @@
+---
+title: Development Workflow
+description: Justfile recipes, Go toolchain, and build process
+---
+
+## Justfile Recipes
+
+```just
+NAME := "clawnch"
+
+# Build the CLI binary
+build:
+    go build -o {{NAME}} .
+
+# Run with arguments
+run *args:
+    go run . {{args}}
+
+# Run all tests
+test:
+    go test -v -race -count=1 ./...
+
+# Format code
+fmt:
+    go fmt ./...
+
+# Lint
+lint:
+    golangci-lint run
+
+# Build agent images
+image-% agent:
+    docker build -f images/{{agent}}.Dockerfile -t {{NAME}}/{{agent}} .
+
+# Cross-compile release binaries
+release:
+    mkdir -p build
+    GOOS=darwin  GOARCH=arm64 go build -o build/{{NAME}}-darwin-arm64  .
+    GOOS=linux   GOARCH=arm64 go build -o build/{{NAME}}-linux-arm64   .
+    GOOS=linux   GOARCH=amd64 go build -o build/{{NAME}}-linux-amd64   .
+
+# Start docs dev server
+docs:
+    cd docs && npm run dev
+```
+
+## Go Toolchain
+
+- Go 1.23+
+- `golangci-lint` (optional)
+- Docker Engine (for agent images and integration tests)
+- Node.js 22+ (for docs site)

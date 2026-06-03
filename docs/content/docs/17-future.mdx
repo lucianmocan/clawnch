@@ -1,0 +1,28 @@
+---
+title: Future Work
+description: Near-term and long-term roadmap
+---
+
+## Near-Term
+
+| Feature | Priority | Description |
+|---|---|---|
+| MicroVM backend | High | microsandbox/Firecracker isolation |
+| Linux Secret Service | High | `secret-tool` credential store |
+| Branch mode auto-commit | Medium | `--branch --commit` |
+| Branch mode auto-PR | Medium | `--branch --pr` with `gh` |
+| User-defined agents | Medium | `~/.config/clawnch/agents.toml` |
+| Resource limits | Medium | `--memory`, `--cpus` flags |
+| System proxy | Low | HTTP_PROXY passthrough |
+
+## Long-Term
+
+| Feature | Description |
+|---|---|
+| TUI | `bubbletea`-based terminal UI |
+| Sandbox snapshots | Save/restore sandbox state |
+| MCP integration | Tool execution sandboxing via MCP |
+| Windows support | Windows Credential Manager |
+| Image signing | cosign/sigstore verification |
+| Plugin system | Custom backends, cred stores, agents |
+| Remote sandboxes | Run on remote Docker host or Kubernetes |

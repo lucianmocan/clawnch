@@ -1,0 +1,33 @@
+---
+title: Testing Strategy
+description: Unit tests, integration tests, and CI pipeline
+---
+
+## Unit Tests
+
+| Package | Coverage |
+|---|---|
+| `clawnch` | Config parsing, agent registry, path resolution, network policy validation |
+| `clawnch` | `CredStore` in-memory mock — all operations |
+| `clawnch` | `Backend` mock — config to Docker args translation |
+
+## Integration Tests
+
+| Test | What it validates |
+|---|---|
+| `TestContainerBackend_Run_WithMockDocker` | Docker CLI args generated from SandboxConfig |
+| `TestContainerBackend_List` | `docker ps --filter` invocation and output parsing |
+| `TestKeychainCredStore` | `security` CLI invocation patterns |
+| `TestAgentImageBuild` | `docker build` with correct Dockerfile |
+
+## End-to-End Tests
+
+E2E tests require a real Docker daemon and run only in CI:
+
+- Create sandbox → verify container running → verify workspace mounted → verify env vars injected → stop → verify container removed
+
+## CI Pipeline (Future)
+
+```
+lint → test → test-cover → build → images
+```

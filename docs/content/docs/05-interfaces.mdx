@@ -1,0 +1,74 @@
+---
+title: Core Interfaces
+description: Backend, CredStore, and Agent type definitions
+---
+
+## Backend Interface
+
+```go
+type Backend interface {
+    Run(ctx context.Context, cfg SandboxConfig) (*Sandbox, error)
+    List(ctx context.Context, all bool) ([]Sandbox, error)
+    Stop(ctx context.Context, name string, force bool) error
+    Logs(ctx context.Context, name string, opts LogOptions) ([]byte, error)
+    Available(ctx context.Context) error
+}
+
+type SandboxConfig struct {
+    Name      string
+    Workspace string
+    Agent     Agent
+    Network   NetworkMode
+    AllowList []string
+    BlockList []string
+    EnvFile   string
+    Detach    bool
+    Branch    string
+    Backend   string
+}
+
+type Sandbox struct {
+    Name      string    `json:"name"`
+    Agent     string    `json:"agent"`
+    Backend   string    `json:"backend"`
+    Workspace string    `json:"workspace"`
+    Status    string    `json:"status"`
+    Created   time.Time `json:"created"`
+    Network   string    `json:"network"`
+    ID        string    `json:"id"`
+}
+
+type NetworkMode string
+
+const (
+    NetworkIsolated NetworkMode = "isolated"
+    NetworkHost     NetworkMode = "host"
+    NetworkNone     NetworkMode = "none"
+)
+```
+
+## CredStore Interface
+
+```go
+type CredStore interface {
+    Get(key string) (string, error)
+    Set(key, value string) error
+    Delete(key string) error
+    List() ([]string, error)
+    Available(ctx context.Context) error
+}
+```
+
+## Agent Definition
+
+```go
+type Agent struct {
+    Name              string
+    Description       string
+    Image             string
+    BuildFile         string
+    Command           []string
+    EnvKeys           []string
+    SupportedBackends []string
+}
+```

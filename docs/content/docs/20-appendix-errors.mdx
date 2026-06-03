@@ -1,0 +1,91 @@
+---
+title: "Appendix C: Error Codes"
+description: Complete error code catalog
+---
+
+## Error Types
+
+```go
+type SandboxError struct {
+    Code    ErrorCode `json:"code"`
+    Message string    `json:"message"`
+    Detail  string    `json:"detail,omitempty"`
+    Err     error     `json:"-"`
+}
+```
+
+## Error Codes
+
+### General (1–99)
+
+| Code | Name | Description |
+|---|---|---|
+| 1 | `ErrInternal` | Unexpected internal error |
+| 2 | `ErrInvalidInput` | Bad CLI arguments or config |
+| 3 | `ErrNotFound` | Resource not found |
+| 4 | `ErrAlreadyExists` | Resource already exists |
+| 5 | `ErrPermission` | Permission denied |
+| 6 | `ErrInterrupted` | User interrupted (SIGINT) |
+
+### Backend (100–199)
+
+| Code | Name | Description |
+|---|---|---|
+| 100 | `ErrBackendUnavailable` | Docker/microsandbox not installed or not running |
+| 101 | `ErrImageNotFound` | Agent image not found and build failed |
+| 102 | `ErrImageBuild` | Docker build failed |
+| 103 | `ErrSandboxRun` | Container/VM failed to start |
+| 104 | `ErrSandboxStop` | Failed to stop sandbox |
+| 105 | `ErrSandboxLogs` | Failed to retrieve logs |
+| 106 | `ErrSandboxList` | Failed to list sandboxes |
+| 107 | `ErrNetworkCreate` | Failed to create Docker network |
+| 108 | `ErrNetworkRule` | Invalid network rule |
+
+### Credential (200–299)
+
+| Code | Name | Description |
+|---|---|---|
+| 200 | `ErrCredStoreUnavailable` | Keychain/secret-service not available |
+| 201 | `ErrCredNotFound` | Credential not found |
+| 202 | `ErrCredSet` | Failed to store credential |
+| 203 | `ErrCredDelete` | Failed to delete credential |
+| 204 | `ErrCredList` | Failed to list credentials |
+| 205 | `ErrCredDecrypt` | Failed to decrypt credential file |
+| 206 | `ErrCredEncrypt` | Failed to encrypt credential file |
+
+### Workspace (300–399)
+
+| Code | Name | Description |
+|---|---|---|
+| 300 | `ErrWorkspaceNotFound` | Directory does not exist |
+| 301 | `ErrWorkspaceNotDir` | Path is not a directory |
+| 302 | `ErrWorkspaceUnsafe` | Path is unsafe (/, /etc, ~/.ssh) |
+| 303 | `ErrWorkspaceNotGit` | Not a git repository |
+
+### Git Branch Mode (400–499)
+
+| Code | Name | Description |
+|---|---|---|
+| 400 | `ErrGitUnavailable` | Git not installed |
+| 401 | `ErrGitDirty` | Uncommitted changes |
+| 402 | `ErrGitBranch` | Failed to create branch |
+| 403 | `ErrGitCommit` | Failed to commit |
+| 404 | `ErrGitPR` | Failed to create PR |
+
+## Error Output
+
+**Text (default):**
+```
+Error: sandbox not found
+  Code: 3
+  Detail: No sandbox with name "my-experiment" exists
+```
+
+**JSON (with `--log-format json`):**
+```json
+{
+  "code": 3,
+  "message": "sandbox not found",
+  "detail": "No sandbox with name \"my-experiment\" exists"
+}
+```

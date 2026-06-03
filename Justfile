@@ -32,6 +32,14 @@ remove-key account:
         echo "Removed {{account}}" || \
         echo "Key {{account}} not found"
 
+# Start the Fumadocs documentation dev server
+docs:
+    cd docs && npm run dev
+
+# Build the documentation site
+docs-build:
+    cd docs && npm run build
+
 # Run opencode in a sandboxed Docker container for the given project.
 #   net="bridge" (default): full internet, AI provider APIs work normally.
 #   net="none":             fully isolated, no network (AI features unavailable).
